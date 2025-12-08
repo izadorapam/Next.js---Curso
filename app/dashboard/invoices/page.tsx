@@ -1,7 +1,3 @@
-export const metadata: Metadata = {
-  title: 'Invoices',
-};
-
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/invoices/table';
@@ -12,9 +8,21 @@ import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 
-export default async function Page({ searchParams }: { searchParams?: { query?: string; page?: string } }) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+export const metadata: Metadata = {
+  title: 'Invoices',
+};
+
+// Marca a função como async
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { query?: string; page?: string } | Promise<{ query?: string; page?: string }>;
+}) {
+  // "await" garante que você resolve a Promise, se houver
+  const params = await searchParams;
+  const query = params?.query || '';
+  const currentPage = Number(params?.page) || 1;
+
   const totalPages = await fetchInvoicesPages(query);
 
   return (
